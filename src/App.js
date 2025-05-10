@@ -675,7 +675,122 @@ function App() {
                     </div>
                   </div>
                 </div>
+                {/* Nueva sección: Top Compradores y Top Productos */}
+          <div className="row mt-4">
+            {/* Top Compradores */}
+            <div className="col-md-6">
+              <div className="card border-0 shadow-sm h-100">
+                <div className="card-header bg-white border-0">
+                  <h6 className="mb-0 d-flex align-items-center" style={{ color: '#1e293b' }}>
+                    <FiUsers className="me-2" color="#3b82f6" />
+                    <span>Top Compradores</span>
+                  </h6>
+                </div>
+                <div className="card-body">
+                  <div className="list-group list-group-flush">
+                    {clientes
+                      .map(cliente => {
+                        const ventasCliente = ventas.filter(v => v.cliente_id === cliente._id);
+                        const totalGastado = ventasCliente.reduce((sum, venta) => sum + venta.total, 0);
+                        return {
+                          ...cliente,
+                          totalGastado,
+                          cantidadCompras: ventasCliente.length
+                        };
+                      })
+                      .sort((a, b) => b.totalGastado - a.totalGastado)
+                      .slice(0, 5)
+                      .map((cliente, index) => (
+                        <div key={cliente._id} className="list-group-item border-0 py-2 px-0">
+                          <div className="d-flex justify-content-between align-items-center">
+                            <div className="d-flex align-items-center">
+                              <span className="badge bg-blue-100 text-blue-800 me-2" style={{ 
+                                borderRadius: '50%', 
+                                width: '24px', 
+                                height: '24px', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center',
+                                fontWeight: 600
+                              }}>
+                                {index + 1}
+                              </span>
+                              <div>
+                                <p className="mb-0 fw-medium" style={{ color: '#1e293b' }}>{cliente.nombre}</p>
+                                <small className="text-muted">{cliente.cantidadCompras} compras</small>
+                              </div>
+                            </div>
+                            <span className="badge bg-green-100 text-green-800 fw-medium">
+                              S/ {cliente.totalGastado.toFixed(2)}
+                            </span>
+                          </div>
+                        </div>
+                      ))
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
 
+            {/* Top Productos Vendidos */}
+            <div className="col-md-6">
+              <div className="card border-0 shadow-sm h-100">
+                <div className="card-header bg-white border-0">
+                  <h6 className="mb-0 d-flex align-items-center" style={{ color: '#1e293b' }}>
+                    <FiPackage className="me-2" color="#3b82f6" />
+                    <span>Top Productos Vendidos</span>
+                  </h6>
+                </div>
+                <div className="card-body">
+                  <div className="list-group list-group-flush">
+                    {productos
+                      .map(producto => {
+                        const ventasProducto = ventas.filter(v => v.producto_id === producto._id);
+                        const totalVendido = ventasProducto.reduce((sum, venta) => sum + venta.cantidad, 0);
+                        const totalIngresos = ventasProducto.reduce((sum, venta) => sum + venta.total, 0);
+                        return {
+                          ...producto,
+                          totalVendido,
+                          totalIngresos
+                        };
+                      })
+                      .sort((a, b) => b.totalVendido - a.totalVendido)
+                      .slice(0, 5)
+                      .map((producto, index) => (
+                        <div key={producto._id} className="list-group-item border-0 py-2 px-0">
+                          <div className="d-flex justify-content-between align-items-center">
+                            <div className="d-flex align-items-center">
+                              <span className="badge bg-blue-100 text-blue-800 me-2" style={{ 
+                                borderRadius: '50%', 
+                                width: '24px', 
+                                height: '24px', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center',
+                                fontWeight: 600
+                              }}>
+                                {index + 1}
+                              </span>
+                              <div>
+                                <p className="mb-0 fw-medium" style={{ color: '#1e293b' }}>{producto.nombre}</p>
+                                <small className="text-muted">S/ {producto.precio.toFixed(2)} c/u</small>
+                              </div>
+                            </div>
+                            <div className="text-end">
+                              <span className="badge bg-purple-100 text-purple-800 d-block mb-1 fw-medium">
+                                {producto.totalVendido} vendidos
+                              </span>
+                              <small className="text-muted">S/ {producto.totalIngresos.toFixed(2)} total</small>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
                 {/* Gráfico de tipos de documento */}
                 <div className="row mt-4">
                   <div className="col-md-6">
